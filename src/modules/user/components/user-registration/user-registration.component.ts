@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, UntypedFormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Bad, Ok } from 'src/modules/common/Result';
 import { UserService } from '../../services/user.service';
 
 class UserRegistrationFormModel {
@@ -18,9 +19,8 @@ class UserRegistrationFormModel {
 export class UserRegistrationComponent implements OnInit {
   
   form: FormGroup;
-  validateForm!: UntypedFormGroup;
 
-  model = new UserRegistrationFormModel();
+  //model = new UserRegistrationFormModel();
   
 
   constructor(
@@ -47,22 +47,25 @@ export class UserRegistrationComponent implements OnInit {
     }
     return {};
   };
+  
 
-  updateConfirmValidator(): void {
-    /** wait for refresh value */
-    Promise.resolve().then(() => this.form.controls.checkPassword.updateValueAndValidity());
+
+  async submit() : Promise<void> {
+    if ((await this.register()).success) {
+      this.goToLogin();
+    } 
   }
 
-
-  async submit() {
-
-    // TODO  Vérifier que la confirmation de mot de passe correspond au mot de passe
-    if (this.form.invalid || this.model.password !== this.model.confirmPassword) {
+  async register(): Promise<Bad<"cant_register"> | Ok> {
+    try {
+      const rep = await this.userService.register(
+        this.form.get("username")!.value,
+        this.form.get("password")!.value
+      )
+      return Ok()
+    } catch(e) {
+      return Bad("cant_register")
     }
-
-    // TODO Enregistrer l'utilisateur via le UserService
-    this.goToLogin();
-    
   }
 
   goToLogin() {
