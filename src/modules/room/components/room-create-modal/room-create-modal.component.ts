@@ -3,6 +3,16 @@ import { NgForm } from '@angular/forms';
 import { RoomType } from '../../room.model';
 import { RoomService } from '../../services/room.service';
 
+import { UserQueries } from 'src/modules/user/services/user.queries';
+import { Room } from '../../room.model';
+/**
+ * import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, NgForm, Validators } from '@angular/forms';
+import { UserQueries } from 'src/modules/user/services/user.queries';
+import { Room } from '../../room.model';
+import { RoomService } from '../../services/room.service';
+ */
+
 export class CreateRoomFormModel {
   name: string = "";
   type: RoomType = RoomType.Text;
@@ -20,8 +30,8 @@ export class RoomCreateModalComponent implements OnInit {
   isVisible: boolean = false;
   model = new CreateRoomFormModel();
 
-  constructor(private roomService: RoomService) {
-
+  constructor(private _roomService: RoomService) {
+      
   }
 
   ngOnInit(): void {
@@ -30,9 +40,16 @@ export class RoomCreateModalComponent implements OnInit {
   async onOk() {
     if (this.form.form.valid) {
       // TODO invoquer la méthode create du RoomService
-      this.close();
+      this._roomService.create(this.form.form.get('roomName')!.value, this.form.form.get('type')!.value).then( (room) => {
+        if( room ) {
+          this._roomService.setShouldFetchRooms( true );
+          this.close();
+        }
+      });
     }
   }
+
+
 
   onCancel() {
     this.close();
