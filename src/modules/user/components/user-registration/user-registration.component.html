@@ -1,30 +1,35 @@
 <div class="user-registration">
-  <form nz-form nzLayout="vertical" #f="ngForm" (ngSubmit)="submit()">
+  <form nz-form nzLayout="vertical" [formGroup]='form' (ngSubmit)="submit()">
     <nz-form-item>
-      <nz-form-label nzFor="username">Username</nz-form-label>
-      <nz-form-control>
-        <input class="ant-input" type="text" name="username" id="username" [(ngModel)]="model.username"
-          #username="ngModel">
+      <nz-form-label nzFor="username" nzRequired>Username</nz-form-label>
+      <nz-form-control [nzErrorTip]="confirmUser">
+        <input class="ant-input" formControlName="username" nz-input placeholder="Username">
+        <ng-template #confirmUser let-control>
+          <ng-container *ngIf="control.hasError('required')">Please enter a username</ng-container>
+          <ng-container *ngIf="control.hasError('taken')">This username is already taken</ng-container>
+        </ng-template>
       </nz-form-control>
     </nz-form-item>
     <nz-form-item>
-      <nz-form-label nzFor="password">Mot de passe</nz-form-label>
-      <nz-form-control>
-        <input class="ant-input" type="password" name="password" id="password" [(ngModel)]="model.password"
-          #password="ngModel">
+      <nz-form-label nzFor="password" nzRequired>Mot de passe</nz-form-label>
+      <nz-form-control nzErrorTip="Password required">
+        <input class="ant-input" formControlName="password" nz-input type="password" placeholder="Password">
       </nz-form-control>
     </nz-form-item>
 
     <nz-form-item>
       <nz-form-label nzFor="confirm-password">Confirmation du mot de passe</nz-form-label>
-      <nz-form-control>
-        <input class="ant-input" type="password" name="confirm-password" id="confirm-password"
-          [(ngModel)]="model.confirmPassword" #confirm="ngModel">
+      <nz-form-control [nzErrorTip]="confirmError">
+        <input class="ant-input" formControlName="pwdVal" nz-input type="password" placeholder="Confirm password">
+        <ng-template #confirmError let-control>
+          <ng-container *ngIf="control.hasError('required')">Please confirm your password</ng-container>
+          <ng-container *ngIf="control.hasError('confirm')">This need to be the same as the other password</ng-container>
+        </ng-template>
       </nz-form-control>
     </nz-form-item>
     <nz-form-item>
       <nz-form-control>
-        <button class="register-button" nz-button nzType="default" [disabled]="f.form.invalid">S'enregistrer</button>
+        <button class="register-button" nz-button nzType="default" [disabled]="form.invalid">S'enregistrer</button>
       </nz-form-control>
     </nz-form-item>
   </form>
