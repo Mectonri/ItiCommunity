@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, UntypedFormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { NzMessageService } from 'ng-zorro-antd/message';
 import { Bad, Ok } from 'src/modules/common/Result';
 import { UserQueries } from '../../services/user.queries';
 import { UserService } from '../../services/user.service';
@@ -19,24 +20,16 @@ export class UserRegistrationComponent implements OnInit {
     private router: Router,
     private userService: UserService,
     private formBuilder: FormBuilder,
-    private userQueries : UserQueries
+    private userQueries : UserQueries,
+    private nzMessageService: NzMessageService
   ) {  }
 
   ngOnInit(): void {
     this.form = this.formBuilder.group({
-      username: ["", [Validators.required/** , this.usernameAvailableValidator*/]],
+      username: ["", [ Validators.required]],
       password: ["", [Validators.required]],
       pwdVal: ["", [Validators.required, this.confirmationValidator]]
     });
-  }
-
-  usernameAvailableValidator = async (control: UntypedFormControl): Promise<{ [s: string]: boolean; }> => {
-    if (!control.value) {
-      return { required: true };
-    } else if (await this.userQueries.exists(control.value)) {
-      return { taken: true };
-    }
-    return {};
   }
 
   confirmationValidator = (control: UntypedFormControl): { [s: string]: boolean } => {
@@ -51,6 +44,9 @@ export class UserRegistrationComponent implements OnInit {
 
 
   async submit() : Promise<void> {
+    if (await this.userQueries.exists(this.form.get("username")!.value)) {
+      this.nzMessageService.error("Username already used. Please pick another")
+    } 
     if ((await this.register()).success) {
       this.goToLogin();
     } 

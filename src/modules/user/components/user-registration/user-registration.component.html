@@ -6,7 +6,6 @@
         <input class="ant-input" formControlName="username" nz-input placeholder="Username">
         <ng-template #confirmUser let-control>
           <ng-container *ngIf="control.hasError('required')">Please enter a username</ng-container>
-          <ng-container *ngIf="control.hasError('taken')">This username is already taken</ng-container>
         </ng-template>
       </nz-form-control>
     </nz-form-item>
