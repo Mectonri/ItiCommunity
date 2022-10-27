@@ -1,14 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { FormBuilder, FormGroup, NgForm, UntypedFormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NzMessageService } from "ng-zorro-antd/message";
 import { AuthenticationService } from '../../services/authentication.service';
-//import { NgModel } from '@angular/forms';
-
-class LoginFormModel {
-  username = "";
-  password = "";
-}
 
 @Component({
   selector: 'app-login',
@@ -16,22 +10,25 @@ class LoginFormModel {
   styleUrls: ['./login.component.less']
 })
 export class LoginComponent implements OnInit {
-  @ViewChild(NgForm, { static: false })
-  ngForm: NgForm;
-
-  model = new LoginFormModel();
+  
+  form: FormGroup;
 
   constructor(
     private router: Router,
     private authService: AuthenticationService,
+    private formBuilder: FormBuilder,
     private nzMessageService: NzMessageService
   ) { }
 
   ngOnInit(): void {
+    this.form = this.formBuilder.group({
+      username: ["", [Validators.required/**, this.confirmUservalidator*/]],
+      password: ["", [Validators.required/**, this.confirmPasswordvalidator*/]]
+    })
   }
 
   goToRegistration() {
-    // TODO naviguer vers "/splash/register"
+    this.router.navigate(["/splash/register"]);
   }
 
   submit() {
@@ -39,16 +36,36 @@ export class LoginComponent implements OnInit {
   }
 
   async login() {
-    if (this.ngForm.form.invalid) {
+    if (this.form.invalid) {
       return;
     }
 
     try {
-      // TODO vérifier le résultat de l'authentification. Rediriger sur "/" en cas de succès ou afficher une erreur en cas d'échec
-      await this.authService.authenticate(this.model.username, this.model.password);
+      let response = await this.authService.authenticate(this.form.get("username")!.value, this.form.get("password")!.value);
+
+      if(response.success){
+        this.router.navigate(["/"]);
+      }
+      else{
+        this.nzMessageService.error("Invalid Credentials");
+      }
 
     } catch (e) {
       this.nzMessageService.error("Une erreur est survenue. Veuillez réessayer plus tard");
     }
+  }
+
+  confirmUservalidator = async (control: UntypedFormControl): Promise<{ [s: string]: boolean; }> => {
+    if (!control.value) {
+      return { required: true };
+    } 
+    return {};
+  }
+
+  confirmPasswordvalidator = async (control: UntypedFormControl): Promise<{ [s: string]: boolean; }> => {
+    if (!control.value) {
+      return { required: true };
+    } 
+    return {};
   }
 }
