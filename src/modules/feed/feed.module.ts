@@ -25,10 +25,10 @@ import { FeedSocketService } from './services/feed.socket.service';
   exports: [FeedComponent, PostComponent],
   providers: [PostMapper, PostService, FeedStore, {
     provide: PostCommands,
-    useClass: LocalPostCommands
+    useClass: HttpPostCommands
   }, {
       provide: PostQueries,
-      useClass: LocalPostQueries
+      useClass: HttpPostQueries
     }],
   imports: [
     CommonModule,

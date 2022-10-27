@@ -2,13 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, UntypedFormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Bad, Ok } from 'src/modules/common/Result';
+import { UserQueries } from '../../services/user.queries';
 import { UserService } from '../../services/user.service';
-
-class UserRegistrationFormModel {
-  username = "";
-  password = "";
-  confirmPassword = "";
-}
 
 @Component({
   selector: 'app-user-registration',
@@ -18,35 +13,40 @@ class UserRegistrationFormModel {
 
 export class UserRegistrationComponent implements OnInit {
   
-  form: FormGroup;
-
-  //model = new UserRegistrationFormModel();
-  
+  form: FormGroup;  
 
   constructor(
     private router: Router,
     private userService: UserService,
-    private formBuilder: FormBuilder
-  ) { 
-
-  }
+    private formBuilder: FormBuilder,
+    private userQueries : UserQueries
+  ) {  }
 
   ngOnInit(): void {
     this.form = this.formBuilder.group({
-      username: ["", [Validators.required]],
+      username: ["", [Validators.required, this.usernameAvailableValidator]],
       password: ["", [Validators.required]],
       pwdVal: ["", [Validators.required, this.confirmationValidator]]
     });
+  }
+
+  usernameAvailableValidator = async (control: UntypedFormControl): Promise<{ [s: string]: boolean; }> => {
+    if (!control.value) {
+      return { required: true };
+    } else if (await this.userQueries.exists(control.value)) {
+      return { taken: true };
+    }
+    return {};
   }
 
   confirmationValidator = (control: UntypedFormControl): { [s: string]: boolean } => {
     if (!control.value) {
       return { required: true };
     } else if (control.value !== this.form.controls.password.value) {
-      return { confirm: true, error: true };
+      return { confirm: true };
     }
     return {};
-  };
+  }
   
 
 
@@ -56,15 +56,15 @@ export class UserRegistrationComponent implements OnInit {
     } 
   }
 
-  async register(): Promise<Bad<"cant_register"> | Ok> {
+  async register(): Promise<Bad <"register failed"> | Ok> {
     try {
       const rep = await this.userService.register(
         this.form.get("username")!.value,
         this.form.get("password")!.value
-      )
-      return Ok()
+      );
+      return Ok();
     } catch(e) {
-      return Bad("cant_register")
+      return Bad("register failed");
     }
   }
 
