@@ -132,6 +132,6 @@
   },
   "defaultProject": "iti-community",
   "cli": {
-    "analytics": false
+    "analytics": "c92b968c-8c4c-4505-bd99-f2e8e85b5ce8"
   }
 }
