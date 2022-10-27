@@ -1,20 +1,26 @@
 <div class="login">
-  <form nz-form nzLayout="vertical" #f="ngForm" (submit)="submit()">
+  <form nz-form nzLayout="vertical" [formGroup]="form" (submit)="submit()">
     <nz-form-item>
-      <nz-form-label nzFor="username">Username</nz-form-label>
-      <nz-form-control>
-        <input class="ant-input" type="text" name="username" id="username" placeholder="Nom d'utulisateur" username="ngModel">
+      <nz-form-label nzFor="username" nzRequired>Username</nz-form-label>
+      <nz-form-control [nzErrorTip]="confirmUser">
+        <input class="ant-input" type="text" formControlName="username" placeholder="Nom d'utilisateur">
+        <ng-template #confirmUser let-control>
+          <ng-container *ngIf="control.hasError('required')">Please enter a username</ng-container>
+        </ng-template>
       </nz-form-control>
     </nz-form-item>
     <nz-form-item>
-      <nz-form-label nzFor="password" >Mot de passe</nz-form-label>
-      <nz-form-control>
-          <input class="ant-input" type="password" name="password" id="password" placeholder="Mot de passe"  password="ngModel">
+      <nz-form-label nzFor="password" nzRequired>Mot de passe</nz-form-label>
+      <nz-form-control [nzErrorTip]="confirmPassword">
+          <input class="ant-input" type="password" formControlName="password" placeholder="Mot de passe" >
+          <ng-template #confirmPassword let-control>
+            <ng-container *ngIf="control.hasError('required')">Please enter a password</ng-container>
+          </ng-template>
       </nz-form-control>
     </nz-form-item>
     <nz-form-item>
-      <nz-form-control>
-        <button class="login-button" type="submit" nz-button nzType="default" [disabled]="f.form.invalid"
+      <nz-form-control >
+        <button class="login-button" nzType="submit" nz-button nzType="default" [disabled]="form.invalid"
           (submit)="submit()">Connexion</button>
       </nz-form-control>
     </nz-form-item>
