@@ -36,9 +36,19 @@ export class RoomMenuComponent implements OnInit {
     this.roomSocketService.onNewRoom( ( room ) => {
       this.retrieveRooms();
     });
+
+    if( this.router.url.endsWith('app') ) {
+      let lastRoomId = window.localStorage.getItem( "lastVisitedRoom");
+      if( lastRoomId ) {
+        this.router.navigate([`/app/${ lastRoomId }`]);
+      }
+    } else {
+      this.router.navigate([this.router.url]);
+    }
   }
 
   goToRoom(room: Room) {
+    window.localStorage.setItem( "lastVisitedRoom", room.id.toString() );
     this.router.navigate([`/app/${room.id}`]);
   }
 
