@@ -2,16 +2,10 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { RoomType } from '../../room.model';
 import { RoomService } from '../../services/room.service';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { UserQueries } from 'src/modules/user/services/user.queries';
+import { Room } from '../../room.model';
 
-import { UserQueries } from 'src/modules/user/services/user.queries';
-import { Room } from '../../room.model';
-/**
- * import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, NgForm, Validators } from '@angular/forms';
-import { UserQueries } from 'src/modules/user/services/user.queries';
-import { Room } from '../../room.model';
-import { RoomService } from '../../services/room.service';
- */
 
 export class CreateRoomFormModel {
   name: string = "";
@@ -26,15 +20,21 @@ export class CreateRoomFormModel {
 export class RoomCreateModalComponent implements OnInit {
   @ViewChild("f")
   form: NgForm;
+  public roomFormGroup: FormGroup;
 
   isVisible: boolean = false;
   model = new CreateRoomFormModel();
 
-  constructor(private _roomService: RoomService) {
-      
-  }
+  constructor(
+    private _roomService: RoomService,
+    private _formBuilder: FormBuilder,
+    ) {}
 
   ngOnInit(): void {
+     this.roomFormGroup = this._formBuilder.group({
+      type: ['text', [Validators.required]],
+      roomName: ['', [Validators.required]]
+    });
   }
 
   async onOk() {
