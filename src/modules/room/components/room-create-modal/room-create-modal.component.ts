@@ -1,12 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
 import { RoomType } from '../../room.model';
 import { RoomService } from '../../services/room.service';
-
-export class CreateRoomFormModel {
-  name: string = "";
-  type: RoomType = RoomType.Text;
-}
 
 @Component({
   selector: 'app-room-create-modal',
@@ -14,22 +9,25 @@ export class CreateRoomFormModel {
   styleUrls: ['./room-create-modal.component.less']
 })
 export class RoomCreateModalComponent implements OnInit {
-  @ViewChild("f")
-  form: NgForm;
+  createRoomForm: FormGroup;
 
   isVisible: boolean = false;
-  model = new CreateRoomFormModel();
 
-  constructor(private roomService: RoomService) {
-
-  }
+  constructor(
+    private roomService: RoomService,
+    private formBuilder: FormBuilder
+    ) { }
 
   ngOnInit(): void {
+    this.createRoomForm = this.formBuilder.group({
+      type: ['', [Validators.required]],
+      name: ['', [Validators.required]]
+    });
   }
 
   async onOk() {
-    if (this.form.form.valid) {
-      // TODO invoquer la méthode create du RoomService
+    if (this.createRoomForm.valid) {
+      this.roomService.create(this.createRoomForm.get("name")!.value, this.createRoomForm.get("type")!.value);
       this.close();
     }
   }
@@ -40,7 +38,7 @@ export class RoomCreateModalComponent implements OnInit {
 
   open() {
     this.isVisible = true;
-    setTimeout(() => this.form.resetForm(new CreateRoomFormModel()))
+    this.createRoomForm.reset({ type: 'text', name: '' });
   }
 
   close() {
