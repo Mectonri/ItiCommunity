@@ -20,10 +20,11 @@ export class RoomMenuComponent implements OnInit {
   @ViewChild("modal")
   roomCreateModalComponent: RoomCreateModalComponent;
 
-  constructor(private feedStore: FeedStore,
-     private queries: RoomQueries, 
-     private roomSocketService: RoomSocketService,
-     private router: Router)
+  constructor(
+    private feedStore: FeedStore,
+    private queries: RoomQueries, 
+    private roomSocketService: RoomSocketService,
+    private router: Router)
   {
     this.roomId$ = feedStore.roomId$;
     this.rooms = [];

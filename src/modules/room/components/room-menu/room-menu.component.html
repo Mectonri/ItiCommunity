@@ -1,7 +1,9 @@
 <div class="room-menu">
   <div class="room-meanu-header">
     <h3>Rooms</h3>
-    <button nz-button nzType="default" nzGhost><i nz-icon nzType="plus" (click)="openCreateRoom()"></i></button>
+    <button nz-button nzType="default" nzGhost (click)="openCreateRoom()">
+      <i nz-icon nzType="plus" ></i>
+    </button>
   </div>
   <ng-container *ngFor="let room of rooms">
     <div class="menu-item" [ngClass]="{'selected': (roomId$ | async) === room.id}">
