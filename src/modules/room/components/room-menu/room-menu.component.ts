@@ -31,7 +31,11 @@ export class RoomMenuComponent implements OnInit {
   }
 
   async ngOnInit() {
-    this.rooms = await this.queries.getAll();
+    await this.retrieveRooms();
+
+    this.roomSocketService.onNewRoom( ( room ) => {
+      this.retrieveRooms();
+    });
   }
 
   goToRoom(room: Room) {
@@ -40,5 +44,9 @@ export class RoomMenuComponent implements OnInit {
 
   openCreateRoom(){
     this.roomCreateModalComponent.open();
+  }
+
+  async retrieveRooms() {
+    this.rooms = await this.queries.getAll();
   }
 }
