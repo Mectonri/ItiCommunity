@@ -9,6 +9,7 @@ import { RoomService } from '../../services/room.service';
   styleUrls: ['./room-create-modal.component.less']
 })
 export class RoomCreateModalComponent implements OnInit {
+
   createRoomForm: FormGroup;
 
   isVisible: boolean = false;
@@ -17,6 +18,7 @@ export class RoomCreateModalComponent implements OnInit {
     private roomService: RoomService,
     private formBuilder: FormBuilder
     ) { }
+
 
   ngOnInit(): void {
     this.createRoomForm = this.formBuilder.group({
@@ -40,6 +42,7 @@ export class RoomCreateModalComponent implements OnInit {
     this.isVisible = true;
     this.createRoomForm.reset({ type: 'text', name: '' });
   }
+
 
   close() {
     this.isVisible = false;

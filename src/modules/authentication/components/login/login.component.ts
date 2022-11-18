@@ -42,8 +42,9 @@ export class LoginComponent implements OnInit {
 
     try {
       let response = await this.authService.authenticate(this.form.get("username")!.value, this.form.get("password")!.value);
-
+      console.log("response status :"+response.success);
       if(response.success){
+        console.log("before router");
         this.router.navigate(["/"]);
       }
       else{
