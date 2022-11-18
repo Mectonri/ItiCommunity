@@ -34,7 +34,7 @@ export class FeedInputComponent {
 
   constructor(
     private userService: UserService
-  ) { }
+  ) {}
 
   /**
    * Triggered when the user is selecting a mention in the list.

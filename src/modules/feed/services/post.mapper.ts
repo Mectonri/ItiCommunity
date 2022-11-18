@@ -19,11 +19,11 @@ export class PostMapper {
     const youtubeRegex = /(http[s]?:\/\/)?www\.(?:youtube\.com\/\S*(?:(?:\/e(?:mbed))?\/|watch\/?\?(?:\S*?&?v\=))|youtu\.be\/)([a-zA-Z0-9_-]{6,11})/gmi;
     const audioRegex = /http[s]?:\/\/.+\.(mp3|ogg|wav)/gmi;
     
-    
 
     if (urlRegex.test(word)) {
       content = `<a href=${word}>${word}</a>`;
     }
+
     if (pictureRegex.test(word)) {
       messageElem = {type: "image", url: word.match(pictureRegex)![0]};
     }
