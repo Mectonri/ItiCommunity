@@ -4,7 +4,6 @@
   <div class="post-author-photo" [ngStyle]="profilePicture ? { 'background-image': 'url(' + profilePicture + ')' } : {}"></div>
   <div class="post-date">{{ postDate }}</div>
 
-  <!-- TIPS: [ngClass]="{liked: [expression booléenne]}" -->
   <div class="post-user-like" (click)="like()">
     <i nz-icon nzType="heart" [nzTheme]="post.liked ? 'fill' : 'outline'"></i>
   </div>
@@ -21,6 +20,9 @@
       </ng-container>
       <ng-container *ngSwitchCase="'youtube'">
         <app-post-attachement-youtube [element]="element"></app-post-attachement-youtube>
+      </ng-container>
+      <ng-container *ngSwitchCase="'audio'">
+        <app-post-attachement-audio [element]="element"></app-post-attachement-audio>
       </ng-container>
     </ng-container>
   </div>
