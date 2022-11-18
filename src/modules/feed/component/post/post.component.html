@@ -13,6 +13,11 @@
 
   <!-- Itérer sur les "attachements" du message -->
   <div class="post-attachements" *ngFor="let element of post.message.attachements">
+    <ng-container [ngSwitch]="element.type">
+      <ng-container *ngSwitchCase="'image'">
+        <app-post-attachement-image [element]="element"></app-post-attachement-image>
+      </ng-container>
+    </ng-container>
     <!-- Utiliser ngIf pour afficher le bon composant en fonction du type d'élément-->
   </div>
   <div #anchor></div>
