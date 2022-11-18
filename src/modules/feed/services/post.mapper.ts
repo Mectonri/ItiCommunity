@@ -15,8 +15,7 @@ export class PostMapper {
 
     const urlRegex = /(https|http)(:\/\/)(\w|\S)*/gm;
     const pictureRegex = /http[s]?:\/\/.+\.(jpeg|jpg|png|gif)/gmi;
-     // TODO mp4,wmv,flv,avi,wav
-    const videoRegex = / /gmi;
+    const videoRegex = /http[s]?:\/\/.+\.(mp4|wmv|flv|avi|wav)/gmi;
      // TODO mp3,ogg,wav
     const audioRegex = / /gmi;
     const youtubeRegex = /(http[s]?:\/\/)?www\.(?:youtube\.com\/\S*(?:(?:\/e(?:mbed))?\/|watch\/?\?(?:\S*?&?v\=))|youtu\.be\/)([a-zA-Z0-9_-]{6,11})/gmi;
@@ -26,13 +25,10 @@ export class PostMapper {
       content = `<a href=${word}>${word}</a>`;
     }
     if (pictureRegex.test(word)) {
-      messageElem = {type: 'image', url: word.match(pictureRegex)![0]};
+      messageElem = {type: "image", url: word.match(pictureRegex)![0]};
     }
-
-    const videoMatche = videoRegex.exec(word)
-    if (videoMatche) {
-     // TODO ajouter un attachement de type video dans attachements
-
+    if (videoRegex.test(word)) {
+     messageElem = {type: "video", url: word.match(videoRegex)![0]};
     }
 
     const audioMatche = audioRegex.exec(word)

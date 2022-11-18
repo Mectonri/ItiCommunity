@@ -17,8 +17,10 @@
       <ng-container *ngSwitchCase="'image'">
         <app-post-attachement-image [element]="element"></app-post-attachement-image>
       </ng-container>
+      <ng-container *ngSwitchCase="'video'">
+        <app-post-attachement-video [element]="element"></app-post-attachement-video>
+      </ng-container>
     </ng-container>
-    <!-- Utiliser ngIf pour afficher le bon composant en fonction du type d'élément-->
   </div>
   <div #anchor></div>
 </div>
