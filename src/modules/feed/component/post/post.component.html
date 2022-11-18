@@ -5,13 +5,12 @@
   <div class="post-date">{{ postDate }}</div>
 
   <!-- TIPS: [ngClass]="{liked: [expression booléenne]}" -->
-  <div class="post-user-like">
+  <div class="post-user-like" (click)="like()">
     <i nz-icon nzType="heart" [nzTheme]="post.liked ? 'fill' : 'outline'"></i>
   </div>
 
   <p class="post-text" [innerHTML]="post.message.text.content"> </p>
 
-  <!-- Itérer sur les "attachements" du message -->
   <div class="post-attachements" *ngFor="let element of post.message.attachements">
     <ng-container [ngSwitch]="element.type">
       <ng-container *ngSwitchCase="'image'">
