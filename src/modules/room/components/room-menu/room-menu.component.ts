@@ -14,17 +14,18 @@ import { RoomCreateModalComponent } from '../room-create-modal/room-create-modal
   styleUrls: ['./room-menu.component.less']
 })
 export class RoomMenuComponent implements OnInit {
-  roomId$: Observable<string | undefined>;
-  rooms: Room[];
-  
   @ViewChild("modal")
   roomCreateModalComponent: RoomCreateModalComponent;
+
+  roomId$: Observable<string | undefined>;
+  rooms: Room[];
 
   constructor(
     private feedStore: FeedStore,
     private queries: RoomQueries, 
     private roomSocketService: RoomSocketService,
     private router: Router)
+
   {
     this.roomId$ = feedStore.roomId$;
     this.rooms = [];
@@ -45,6 +46,7 @@ export class RoomMenuComponent implements OnInit {
     } else {
       this.router.navigate([this.router.url]);
     }
+
   }
 
   goToRoom(room: Room) {
@@ -59,4 +61,5 @@ export class RoomMenuComponent implements OnInit {
   async retrieveRooms() {
     this.rooms = await this.queries.getAll();
   }
+
 }
