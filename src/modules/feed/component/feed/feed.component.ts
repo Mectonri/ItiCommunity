@@ -24,9 +24,6 @@ export class FeedComponent implements OnInit {
   async ngOnInit() {
     this.store.onRoomIdChange(async roomId => {
       if (roomId) {
-        this.socketService.onNewPost(roomId, post => {
-          this.store.appendPost(post);
-        })
         await this.postService.fetch(roomId, {
           page: 0,
           perPage: 10000
