@@ -13,27 +13,21 @@ export class PostComponent implements OnInit, AfterViewInit {
   @Input()
   post: Post;
 
-  public profilePicture: string | undefined;
   public postDate: string;
 
   @ViewChild("anchor")
   anchor: ElementRef<HTMLDivElement>;
 
   constructor(
-    private postService: PostService,
-    private userQueries: UserQueries
+    private postService: PostService
   ) { }
 
   async ngOnInit(): Promise<void> {
-    const userPicture = (await this.userQueries.search(this.post.createdBy.username))[0].photoUrl;
-    if( userPicture== undefined) 
+
+    if( this.post.createdBy.photoUrl == undefined) 
     {
-      this.profilePicture = "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Unknown_person.jpg/434px-Unknown_person.jpg";
+      this.post.createdBy.photoUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Unknown_person.jpg/434px-Unknown_person.jpg";
     } 
-    else 
-    {
-      this.profilePicture = userPicture;
-    }
     
     this.postDate = DateTime.fromMillis(parseInt(this.post.createdAt)).toLocal().toRelative() as string;
   }

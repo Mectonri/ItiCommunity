@@ -1,7 +1,7 @@
 <div class="post">
   <div class="post-author-name">{{ post.createdBy.username }}</div>
 
-  <div class="post-author-photo" [ngStyle]="profilePicture ? { 'background-image': 'url(' + profilePicture + ')' } : {}"></div>
+  <div class="post-author-photo" [ngStyle]="{ 'background-image': 'url(' + post.createdBy.photoUrl + ')' }"></div>
   <div class="post-date">{{ postDate }}</div>
 
   <div class="post-user-like" (click)="like()">
