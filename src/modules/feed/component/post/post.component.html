@@ -20,6 +20,9 @@
       <ng-container *ngSwitchCase="'video'">
         <app-post-attachement-video [element]="element"></app-post-attachement-video>
       </ng-container>
+      <ng-container *ngSwitchCase="'youtube'">
+        <app-post-attachement-youtube [element]="element"></app-post-attachement-youtube>
+      </ng-container>
     </ng-container>
   </div>
   <div #anchor></div>

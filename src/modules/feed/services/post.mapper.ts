@@ -16,9 +16,10 @@ export class PostMapper {
     const urlRegex = /(https|http)(:\/\/)(\w|\S)*/gm;
     const pictureRegex = /http[s]?:\/\/.+\.(jpeg|jpg|png|gif)/gmi;
     const videoRegex = /http[s]?:\/\/.+\.(mp4|wmv|flv|avi|wav)/gmi;
+    const youtubeRegex = /(http[s]?:\/\/)?www\.(?:youtube\.com\/\S*(?:(?:\/e(?:mbed))?\/|watch\/?\?(?:\S*?&?v\=))|youtu\.be\/)([a-zA-Z0-9_-]{6,11})/gmi;
      // TODO mp3,ogg,wav
     const audioRegex = / /gmi;
-    const youtubeRegex = /(http[s]?:\/\/)?www\.(?:youtube\.com\/\S*(?:(?:\/e(?:mbed))?\/|watch\/?\?(?:\S*?&?v\=))|youtu\.be\/)([a-zA-Z0-9_-]{6,11})/gmi;
+    
     
 
     if (urlRegex.test(word)) {
@@ -28,18 +29,17 @@ export class PostMapper {
       messageElem = {type: "image", url: word.match(pictureRegex)![0]};
     }
     if (videoRegex.test(word)) {
-     messageElem = {type: "video", url: word.match(videoRegex)![0]};
+      messageElem = {type: "video", url: word.match(videoRegex)![0]};
+    }
+    if (youtubeRegex.test(word)) {
+      youtubeRegex.lastIndex = 0;
+      messageElem = {type: "youtube", videoId: youtubeRegex.exec(word)![2]};
     }
 
     const audioMatche = audioRegex.exec(word)
     if (audioMatche) {
      // TODO ajouter un attachement de type audio dans attachements
 
-    }
-
-    const youtubeMatche = youtubeRegex.exec(word)
-    if (youtubeMatche) {
-     // TODO ajouter un attachement de type youtube dans attachements
     }
 
     return [content, messageElem];
