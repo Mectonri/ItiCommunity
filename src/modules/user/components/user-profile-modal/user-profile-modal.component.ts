@@ -3,6 +3,8 @@ import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { UserService } from '../../services/user.service';
 import { User } from '../../user.model';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { UserQueries } from '../../services/user.queries';
 
 export class UserProfileForm {
   id: string;
@@ -60,7 +62,7 @@ export class UserProfileModalComponent implements OnInit {
   isVisible: boolean = false;
   model: UserProfileForm;
 
-  constructor(private userService: UserService, private sanitizer: DomSanitizer) {
+  constructor(private userService: UserService, private sanitizer: DomSanitizer, private userQueries: UserQueries,private nzMessageService: NzMessageService) {
 
   }
 
@@ -73,10 +75,22 @@ export class UserProfileModalComponent implements OnInit {
   }
 
   async onOk() {
-    // TODO vérifier si le formulaire est valide
+    const username = this.model.username
+    const profilPicture = this.model.file
+    
+    if (this.model.hasChanged()) 
+    {
+      if (username != this.user.username && await this.userQueries.exists(username)) {
+        this.nzMessageService.error("Ce nom d'utilisateur est déjà utilisé");
+        return;
+      }
 
-    if (this.model.hasChanged()) {
-      // TODO mettre à jour l'utilisateur via le service
+      this.userService.update({
+        id: this.user.id,
+        username: username,
+        photo: profilPicture,
+      });
+      
     }
 
     this.close();
