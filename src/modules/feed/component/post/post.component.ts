@@ -1,4 +1,5 @@
 import { Component, Input, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
+import { DateTime } from 'luxon';
 import { UserQueries } from 'src/modules/user/services/user.queries';
 import { Post } from '../../post.model';
 import { PostService } from '../../services/post.service';
@@ -13,6 +14,7 @@ export class PostComponent implements OnInit, AfterViewInit {
   post: Post;
 
   public profilePicture: string | undefined;
+  public postDate: string;
 
   @ViewChild("anchor")
   anchor: ElementRef<HTMLDivElement>;
@@ -33,6 +35,7 @@ export class PostComponent implements OnInit, AfterViewInit {
       this.profilePicture = userPicture;
     }
     
+    this.postDate = DateTime.fromMillis(parseInt(this.post.createdAt)).toLocal().toRelative() as string;
   }
 
   ngAfterViewInit() {
