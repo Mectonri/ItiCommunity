@@ -18,10 +18,14 @@ export class PostMapper {
     const videoRegex = /http[s]?:\/\/.+\.(mp4|wmv|flv|avi|wav)/gmi;
     const youtubeRegex = /(http[s]?:\/\/)?www\.(?:youtube\.com\/\S*(?:(?:\/e(?:mbed))?\/|watch\/?\?(?:\S*?&?v\=))|youtu\.be\/)([a-zA-Z0-9_-]{6,11})/gmi;
     const audioRegex = /http[s]?:\/\/.+\.(mp3|ogg|wav)/gmi;
+    const mentionRegex = new RegExp('(?<=[^\w.-]|^)@([A-Za-z]+(?:\.\w+)*)$');
     
 
     if (urlRegex.test(word)) {
       content = `<a href=${word}>${word}</a>`;
+    }
+    if(mentionRegex.test(word)) {
+      content = `<span class="user-mention">${word}</span>`
     }
 
     if (pictureRegex.test(word)) {
@@ -54,7 +58,6 @@ export class PostMapper {
       msgTextElement.content += ctn + " ";
       msgElem !== null? attachements.push(msgElem!) : null;
     }
-
     return {
       text: msgTextElement,
       attachements
