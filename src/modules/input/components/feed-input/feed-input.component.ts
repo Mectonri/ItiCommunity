@@ -32,9 +32,13 @@ export class FeedInputComponent {
 
   supportedTypes = "image/png,image/jpeg,image/gif,image/bmp,image/bmp,video/mpeg,audio/mpeg,audio/x-wav,image/webp";
 
+  private isMentionning : boolean;
   constructor(
     private userService: UserService
-  ) { }
+  ) 
+  {
+    this.isMentionning = false;
+  }
 
   /**
    * Triggered when the user is selecting a mention in the list.
@@ -67,11 +71,51 @@ export class FeedInputComponent {
 
 
   /**
-   * Message change evetn handler
+   * Message change event handler
    * @param message
    */
   onMessageChanged(message: string) {
     this.message = message;
+    const regex = new RegExp('(?<=[^\w.-]|^)@([A-Za-z]+(?:\.\w+)*)$');
+
+    if( message.length === 0 ) 
+    {
+      this.isMentionning = false;
+      this.hideMentionList();
+    }
+
+    if( this.isMentionning ) 
+    {      
+      if( message.length === 1 ) 
+      {
+        this.showMentionList(this.message.match(regex)!);
+      } 
+      else 
+      {
+        const splittedMessage = message.split('@');
+        const searchString = splittedMessage[splittedMessage.length-1];
+        if (searchString.endsWith(" ")) 
+        {
+          this.isMentionning = false;
+          this.hideMentionList();
+        }
+        else 
+        {
+          this.searchMentionedUsers( searchString );
+          this.showMentionList( this.message.match(regex)! );
+        }
+      }
+    } 
+  }
+
+  async searchMentionedUsers(search: string) {
+    if (!search) {
+      this.users = [];
+    } 
+    else 
+    {
+      this.users = await this.userService.search(search);
+    }
   }
 
   /**
@@ -103,6 +147,10 @@ export class FeedInputComponent {
 
       this.send();
     }
+    else if (e.key === "@")
+    {
+      this.isMentionning = true;
+    }
   }
 
   /**
@@ -113,14 +161,6 @@ export class FeedInputComponent {
 
   }
 
-  async searchMentionedUsers(search: string) {
-    if (!search) {
-      this.users = [];
-    } else {
-      this.users = await this.userService.search(search);
-    }
-  }
-
   /**
    * Send the input message
    */
@@ -129,8 +169,9 @@ export class FeedInputComponent {
       return;
     }
 
-    // TODO émettre  l'évènement "messageSent" via la méthode fireMessageSent
-    // TODO vider la zone de saise avec la méthode clear
+    this.fireMessageSent();
+    
+    this.clear();
   }
 
   /**
@@ -145,7 +186,11 @@ export class FeedInputComponent {
    * Emit the "messageSent" event
    */
   fireMessageSent() {
-    // TODO émettre l'évènement "messageSent"
+    this.messageSent.emit( {
+      date: new Date(),
+      message: this.message,
+      file: this.file || undefined
+    } );
   }
 
   /**

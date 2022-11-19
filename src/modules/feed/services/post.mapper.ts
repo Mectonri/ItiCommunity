@@ -8,46 +8,58 @@ export class PostMapper {
     }
   }
 
-  private parseMessage(message: string): PostMessage {
-    // TODO rajouter png jpg et gif
-    const pictureRegex = /http[s]?:\/\/.+\.(jpeg|jpg)/gmi;
+  private parseWord(word: string):  [string, MessageElement | null] {
+    
+    let messageElem: MessageElement | null = null;
+    let content = word;
 
-     // TODO mp4,wmv,flv,avi,wav
-    const videoRegex = / /gmi;
-
-     // TODO mp3,ogg,wav
-    const audioRegex = / /gmi;
-
+    const urlRegex = /(https|http)(:\/\/)(\w|\S)*/gm;
+    const pictureRegex = /http[s]?:\/\/.+\.(jpeg|jpg|png|gif)/gmi;
+    const videoRegex = /http[s]?:\/\/.+\.(mp4|wmv|flv|avi|wav)/gmi;
     const youtubeRegex = /(http[s]?:\/\/)?www\.(?:youtube\.com\/\S*(?:(?:\/e(?:mbed))?\/|watch\/?\?(?:\S*?&?v\=))|youtu\.be\/)([a-zA-Z0-9_-]{6,11})/gmi;
-    const attachements: MessageElement[] = [];
+    const audioRegex = /http[s]?:\/\/.+\.(mp3|ogg|wav)/gmi;
+    const mentionRegex = new RegExp('(?<=[^\w.-]|^)@([A-Za-z]+(?:\.\w+)*)$');
+    
 
-    const pictureMatche = pictureRegex.exec(message);
-    if (pictureMatche) {
-     // TODO ajouter un attachement de type image dans attachements
+    if (urlRegex.test(word)) {
+      content = `<a href=${word}>${word}</a>`;
+    }
+    if(mentionRegex.test(word)) {
+      content = `<span class="user-mention">${word}</span>`
     }
 
-    const videoMatche = videoRegex.exec(message)
-    if (videoMatche) {
-     // TODO ajouter un attachement de type video dans attachements
-
+    if (pictureRegex.test(word)) {
+      messageElem = {type: "image", url: word.match(pictureRegex)![0]};
+    }
+    if (videoRegex.test(word)) {
+      messageElem = {type: "video", url: word.match(videoRegex)![0]};
+    }
+    if (youtubeRegex.test(word)) {
+      youtubeRegex.lastIndex = 0;
+      messageElem = {type: "youtube", videoId: youtubeRegex.exec(word)![2]};
+    }
+    if (audioRegex.test(word)) {
+      messageElem = {type: "audio", url: word.match(audioRegex)![0]};
     }
 
-    const audioMatche = audioRegex.exec(message)
-    if (audioMatche) {
-     // TODO ajouter un attachement de type audio dans attachements
+    return [content, messageElem];
+  }
 
+
+  private parseMessage(message: string): PostMessage {
+    let attachements: MessageElement[] = [];
+    let msgTextElement: MessageTextElement = {
+      type: "text",
+      content: ""
     }
 
-    const youtubeMatche = youtubeRegex.exec(message)
-    if (youtubeMatche) {
-     // TODO ajouter un attachement de type youtube dans attachements
+    for (let word of message.split(" ")) {
+      let [ctn, msgElem] = this.parseWord(word);
+      msgTextElement.content += ctn + " ";
+      msgElem !== null? attachements.push(msgElem!) : null;
     }
-
     return {
-      text: {
-        type: 'text',
-        content: message
-      } as MessageTextElement,
+      text: msgTextElement,
       attachements
     };
   }

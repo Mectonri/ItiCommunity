@@ -7,6 +7,7 @@ import { UserService } from '../../services/user.service';
 import { User } from '../../user.model';
 import { UserStore } from '../../user.store';
 import { NotificationStore } from 'src/modules/notification/notification.store';
+import { Bad, Ok } from 'src/modules/common/Result';
 
 @Component({
   selector: 'app-user-widget',
@@ -46,8 +47,12 @@ export class UserWidgetComponent implements OnInit {
       nzTitle: "Déconnexion",
       nzContent: "Êtes-vous sûr(e) de vouloir déconnecter votre session ?",
       nzOkText: "Déconnexion",
-      nzOnOk: () => {
-        // TODO logout puis rediriger vers "/splash/login"
+      nzOnOk: async () => {
+        await this.authService.logout().then( (response: Bad<"user_not_authenticated"> | Ok) => {
+          if( response.success ) {
+            this.router.navigate(['/splash/login']);
+          }
+        });
       }
     });
   }
